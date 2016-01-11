@@ -71,7 +71,7 @@ The median steps per day is 10351.62.
  
 "What is the impact of imputing missing data on the estimates of the total daily number of steps?"
 
-Intervals with fewer steps are better represented.
+**Intervals with fewer steps are better represented.**
  
 ## Are there differences in activity patterns between weekdays and weekends?
 
