@@ -93,3 +93,5 @@ xyplot(avgSteps ~ interval | dayType, data = byIntervalWeekday, type = "l", main
 ```
 
 ![plot of chunk weekdays](figure/weekdays-1.png)
+
+**There are differences between weekdays and weekends. There is significantly more activity in weekdays around the 750 interval.**

@@ -79,3 +79,5 @@ byIntervalWeekday <- aggregate(merged$steps, by=list(dayType=merged$dayType, int
 names(byIntervalWeekday)[3] = "avgSteps"
 xyplot(avgSteps ~ interval | dayType, data = byIntervalWeekday, type = "l", main="Weekday vs weekend", ylab="Mean of Steps", layout=c(1,2))
 ```
+
+**There are differences between weekdays and weekends. There is significantly more activity in weekdays around the 750 interval.**
