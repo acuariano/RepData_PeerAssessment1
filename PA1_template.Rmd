@@ -10,25 +10,64 @@ output:
 ```{r}
 unzip("activity.zip")
 activity <- read.csv("activity.csv")
-byDate <- aggregate(activity$steps, by=list(date = activity$date), FUN = sum, na.rm=TRUE, na.action=NULL)
-names(byDate)[2] = "steps"
 ```
 
 
 ## What is mean total number of steps taken per day?
-```{r}
-hist(byDate$steps)
+```{r histogram 1}
+byDate <- aggregate(activity$steps, by=list(date = activity$date), FUN = sum, na.rm=TRUE, na.action=NULL)
+names(byDate)[2] = "steps"
+hist(byDate$steps, main="Histogram of Steps", xlab="Steps", breaks=10)
 ```
-The mean of steps per day is `r mean(byDate$steps)`.
-The median steps per day is `r median(byDate$steps)`.
+
+The mean of steps per day is `r format(mean(byDate$steps))`.
+
+The median steps per day is `r format(median(byDate$steps))`.
 
 
 ## What is the average daily activity pattern?
+```{r time series}
+byInterval <- aggregate(activity$steps, by=list(interval = activity$interval), FUN = mean, na.rm=TRUE, na.action=NULL)
+names(byInterval)[2] = "avgSteps"
+plot(byInterval$interval, byInterval$avgSteps, type="l", main="Daily activity", xlab= "Interval", ylab="Mean of Steps", col="blue")
+```
 
 
 
 ## Imputing missing values
+There are `r sum(!complete.cases(activity))` rows with NAs in the dataset.
 
+Will use the average for each interval to fill in NAs.
 
+```{r histogram 2}
+merged <- merge(activity, byInterval, by = "interval")
+merged$steps[is.na(merged$steps)] <- merged$avgSteps[is.na(merged$steps)]
+byDate <- aggregate(merged$steps, by=list(date = activity$date), FUN = sum)
+names(byDate)[2] = "steps"
+hist(byDate$steps, main="Histogram of Steps (NAs replaced with interval mean)", xlab="Steps", breaks=10)
+```
 
+The mean of steps per day is `r format(mean(byDate$steps))`.
+
+The median steps per day is `r format(median(byDate$steps))`.
+
+"Do these values differ from the estimates from the first part of the assignment?"
+
+Yes.
+ 
+"What is the impact of imputing missing data on the estimates of the total daily number of steps?"
+
+Intervals with fewer steps are better represented.
+ 
 ## Are there differences in activity patterns between weekdays and weekends?
+# Convert "date" column to date for use by function weekdays
+# Classify weekdays
+# Plot
+```{r weekdays}
+merged$date <- as.Date(merged$date)
+weekend <- c('Saturday', 'Sunday')
+merged$dayType <- factor((weekdays(merged$date) %in% weekend), levels=c(TRUE, FALSE), labels=c('weekend', 'weekday'))
+byInterval <- aggregate(merged$steps, by=list(dayType=merged$dayType, interval = merged$interval), FUN = mean)
+names(byInterval)[3] = "avgSteps"
+xyplot(avgSteps ~ interval | dayType, data = byInterval, type = "l", main="Weekday vs weekend", ylab="Mean of Steps", layout=c(1,2))
+```
