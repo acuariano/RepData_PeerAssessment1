@@ -70,9 +70,11 @@ Yes.
 Intervals with fewer steps are better represented.
  
 ## Are there differences in activity patterns between weekdays and weekends?
-# Convert "date" column to date for use by function weekdays
-# Classify weekdays
-# Plot
+
+Convert "date" column to date for use by function weekdays
+
+Classify weekdays
+
 
 ```r
 merged$date <- as.Date(merged$date)
