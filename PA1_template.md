@@ -7,6 +7,8 @@ output:
 
 
 ## Loading and preprocessing the data
+Use unzip and read.csv to unpack and read data.
+
 
 ```r
 unzip("activity.zip")
@@ -15,6 +17,7 @@ activity <- read.csv("activity.csv")
 
 
 ## What is mean total number of steps taken per day?
+Sum steps by date and make an histogram.
 
 ```r
 byDate <- aggregate(activity$steps, by=list(date = activity$date), FUN = sum, na.rm=TRUE, na.action=NULL)
@@ -30,6 +33,7 @@ The median steps per day is 10395.
 
 
 ## What is the average daily activity pattern?
+Average steps per interval.
 
 ```r
 byInterval <- aggregate(activity$steps, by=list(interval = activity$interval), FUN = mean, na.rm=TRUE, na.action=NULL)
@@ -63,7 +67,7 @@ The median steps per day is 10351.62.
 
 "Do these values differ from the estimates from the first part of the assignment?"
 
-Yes.
+**Yes.**
  
 "What is the impact of imputing missing data on the estimates of the total daily number of steps?"
 
@@ -71,18 +75,21 @@ Intervals with fewer steps are better represented.
  
 ## Are there differences in activity patterns between weekdays and weekends?
 
-Convert "date" column to date for use by function weekdays
-
-Classify weekdays
+Convert "date" column to date for use by function weekdays and classify weekdays.
 
 
 ```r
 merged$date <- as.Date(merged$date)
 weekend <- c('Saturday', 'Sunday')
 merged$dayType <- factor((weekdays(merged$date) %in% weekend), levels=c(TRUE, FALSE), labels=c('weekend', 'weekday'))
-byInterval <- aggregate(merged$steps, by=list(dayType=merged$dayType, interval = merged$interval), FUN = mean)
-names(byInterval)[3] = "avgSteps"
-xyplot(avgSteps ~ interval | dayType, data = byInterval, type = "l", main="Weekday vs weekend", ylab="Mean of Steps", layout=c(1,2))
+```
+
+Aggregated by interval and weekday.
+
+```r
+byIntervalWeekday <- aggregate(merged$steps, by=list(dayType=merged$dayType, interval = merged$interval), FUN = mean)
+names(byIntervalWeekday)[3] = "avgSteps"
+xyplot(avgSteps ~ interval | dayType, data = byIntervalWeekday, type = "l", main="Weekday vs weekend", ylab="Mean of Steps", layout=c(1,2))
 ```
 
 ![plot of chunk weekdays](figure/weekdays-1.png)
